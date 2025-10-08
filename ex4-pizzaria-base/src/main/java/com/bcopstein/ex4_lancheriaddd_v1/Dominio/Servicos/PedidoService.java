@@ -8,6 +8,7 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -136,6 +137,15 @@ public class PedidoService {
     public Pedido CancelaPedido(long id) {
         pedidoRepository.mudaStatus(id, Pedido.Status.CANCELADO);
         return pedidoRepository.buscaPorId(id);
+    }
+
+    public List<Pedido> listaPedidosEntreDatas(LocalDateTime dataInicio, LocalDateTime dataFinal){
+        Timestamp tsInicio = Timestamp.valueOf(dataInicio);
+        Timestamp tsFinal = Timestamp.valueOf(dataFinal);
+
+
+        List<Pedido> pedidos = pedidoRepository.listaPorIntervalo(tsInicio, tsFinal);
+        return pedidos;
     }
 
 }

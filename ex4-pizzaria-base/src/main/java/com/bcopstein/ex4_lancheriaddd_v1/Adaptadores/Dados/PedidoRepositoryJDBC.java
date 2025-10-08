@@ -1,9 +1,12 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +122,50 @@ public class PedidoRepositoryJDBC implements PedidoRepository{
         // Como não temos a lista de itens salva, por enquanto passamos uma lista vazia
         return new Pedido(id, cliente, dataHoraPagamento, List.of(), status, valor, impostos, desconto, valorCobrado);
     }
+
+    @Override
+    public List<Pedido> listaPorIntervalo(Timestamp dataInicio, Timestamp dataFinal) throws SQLException {
+        List<Pedido> pedidos = new ArrayList<>();
+
+        String sql = """
+            SELECT id, cliente_cpf, dataHoraPagamento, status_pedido,
+                valor, impostos, descontos, valorCobrado
+            FROM pedidos
+            WHERE dataHoraPagamento BETWEEN ? AND ?
+            ORDER BY dataHoraPagamento
+        """;
+
+        // Exemplo: usando DataSource injetado
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setTimestamp(1, dataInicio);
+            stmt.setTimestamp(2, dataFinal);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Pedido pedido = new Pedido();
+                    pedido.setId(rs.getLong("id"));
+                    pedido.setClienteCpf(rs.getLong("cliente_cpf")); // ou getString se for VARCHAR
+
+                    Timestamp timeStamp = rs.getTimestamp("dataHoraPagamento");
+                    if (timeStamp != null) {
+                        pedido.setDataHoraPagamento(timeStamp.toLocalDateTime());
+                    }
+
+                    pedido.setStatusPedido(rs.getString("status_pedido"));
+                    pedido.setValor(rs.getBigDecimal("valor"));
+                    pedido.setImpostos(rs.getBigDecimal("impostos"));
+                    pedido.setDescontos(rs.getBigDecimal("descontos"));
+                    pedido.setValorCobrado(rs.getBigDecimal("valorCobrado"));
+
+                    pedidos.add(pedido);
+                }
+            }
+        }
+
+        return pedidos;
+}
+
 
 }
