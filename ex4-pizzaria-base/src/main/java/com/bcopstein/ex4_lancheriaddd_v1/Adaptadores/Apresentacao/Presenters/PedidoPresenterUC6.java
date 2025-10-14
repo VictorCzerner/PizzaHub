@@ -22,4 +22,24 @@ public class PedidoPresenterUC6 {
         this.status = pedidoResponseUC6.getStatus();
         this.valorCobrado = pedidoResponseUC6.getValorCobrado();
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getClienteCpf() {
+        return clienteCpf;
+    }
+
+    public LocalDateTime getDataHoraPagamento() {
+        return dataHoraPagamento;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public double getValorCobrado() {
+        return valorCobrado;
+    }
 }

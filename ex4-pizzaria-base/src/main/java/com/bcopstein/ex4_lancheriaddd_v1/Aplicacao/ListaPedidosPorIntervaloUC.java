@@ -1,5 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Aplicacao;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;

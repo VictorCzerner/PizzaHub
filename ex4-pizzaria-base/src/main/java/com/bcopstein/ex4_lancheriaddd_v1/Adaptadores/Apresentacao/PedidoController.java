@@ -1,5 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Apresentacao;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,16 +73,25 @@ public class PedidoController {
 
     @GetMapping("/pedidosEntreguesEntre/{dataInicio}/{dataFinal}")
     @CrossOrigin("*")
-    public ResponseEntity<List<PedidoPresenterUC6>> listaPedidosEntreguesEntre (@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDateTime dataInicio, 
-    @PathVariable  @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDateTime dataFinal){
+    public ResponseEntity<List<PedidoPresenterUC6>> listaPedidosEntreguesEntre(
+        @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dataInicio, 
+        @PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dataFinal) {
+
         if (dataInicio.isAfter(dataFinal)) {
             return ResponseEntity.badRequest().build();
         }
-        List<PedidoResponseUC6> listaPedidos = listaPedidosPorIntervaloUC.listaPedidosEntregueDatas(dataInicio, dataFinal);
+
+        LocalDateTime inicioDoDia = dataInicio.atStartOfDay();
+        LocalDateTime fimDoDia = dataFinal.atTime(23, 59, 59);
+
+        List<PedidoResponseUC6> listaPedidos = listaPedidosPorIntervaloUC.listaPedidosEntregueDatas(inicioDoDia, fimDoDia);
+
         List<PedidoPresenterUC6> pedidosPresenter = listaPedidos.stream()
                 .map(p -> new PedidoPresenterUC6(p))
                 .collect(Collectors.toList());
+
         return ResponseEntity.ok(pedidosPresenter);
     }
+
 }
 
