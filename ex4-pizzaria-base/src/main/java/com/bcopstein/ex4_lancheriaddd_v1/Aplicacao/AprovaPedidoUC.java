@@ -4,10 +4,12 @@ import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Request.PedidoRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Responses.PedidoResponse;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.ItemPedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
+import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido.Status;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,14 +24,17 @@ public class AprovaPedidoUC {
 
     public PedidoResponse executar(PedidoRequest pedidoRequest) {
         Pedido pedido = pedidoService.criaPedido(pedidoRequest);
-        List<ItemPedido> itensEmFalta = pedidoService.verificaItens(pedido);
+        List<ItemPedido> itensEmFalta = new ArrayList();
 
-        Pedido resultado = pedidoService.aprovaPedido(pedido);
+        pedido = pedidoService.aprovaPedido(pedido);
+        if (pedido.getStatus() == Status.CANCELADO) {
+            itensEmFalta = pedidoService.verificaItens(pedido);
+        }
 
         List<PedidoResponse.ItemResponse> faltantes = itensEmFalta.stream()
                 .map(i -> new PedidoResponse.ItemResponse(i.getItem().getDescricao(), i.getQuantidade()))
                 .collect(Collectors.toList());
 
-        return new PedidoResponse(resultado, faltantes.isEmpty() ? null : faltantes);
+        return new PedidoResponse(pedido, faltantes.isEmpty() ? null : faltantes);
     }
 }

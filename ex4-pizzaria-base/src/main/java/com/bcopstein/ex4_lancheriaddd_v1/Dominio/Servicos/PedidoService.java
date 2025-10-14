@@ -72,9 +72,9 @@ public class PedidoService {
             pedido.setStatus(Pedido.Status.APROVADO);
             pedido.setValorCobrado(custoFinal);
             pedidoRepository.criaPedido(pedido);
-            System.out.println("✅ Pedido aprovado! Preço total: " + custoFinal);
+            System.out.println("Pedido aprovado! Preço total: " + custoFinal);
         } else {
-            System.out.println("❌ Pedido negado! Ingredientes em falta:");
+            System.out.println("Pedido negado! Ingredientes em falta:");
             verificaItens(pedido).forEach(item -> System.out.println("- " + item.getItem().getDescricao()));
             pedido.setStatus(Pedido.Status.CANCELADO);
         }
