@@ -127,13 +127,15 @@ public class PedidoService {
         double valorCobrado = valor;
 
         int pedidosRecentes = pedidoRepository.quantidadePedidosUltimos20Dias(pedido.getCliente().getCpf());
+        double valorGastoUltimos30dias =  pedidoRepository.valorGastoUltimos30Dias(pedido.getCliente().getCpf());
+        // Esse valor tem que poder ser mudado pelo USUÀRIO MASTER
+        TipoDesconto tipoDesconto = TipoDesconto.CLIENTE_FREQUENTE;
 
         // aplica desconto via serviço
-        double valorComDesconto = descontoService.aplicarDesconto(valorCobrado, pedidosRecentes);
-        double percentualDesconto = descontoService.getPercentualDesconto(pedidosRecentes);
+        double valorComDesconto = descontoService.aplicarDesconto(valorCobrado, pedidosRecentes, valorGastoUltimos30dias, tipoDesconto);
+        double percentualDesconto = descontoService.getPercentualDesconto(pedidosRecentes, valorGastoUltimos30dias, tipoDesconto);
         pedido.setDesconto(percentualDesconto);
         
-
         double impostos = impostoService.calcularImpostos(valorComDesconto);
         pedido.setImpostos(impostos);
 

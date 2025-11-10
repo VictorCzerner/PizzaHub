@@ -27,7 +27,8 @@ public class CardapioController {
                               RecuperaListaCardapiosUC recuperaListaCardapioUC) {
         this.recuperaCardapioUC = recuperaCardapioUC;
         this.recuperaListaCardapioUC = recuperaListaCardapioUC;
-    }
+    }                   
+    
 
     @GetMapping("/{id}")
     @CrossOrigin("*")

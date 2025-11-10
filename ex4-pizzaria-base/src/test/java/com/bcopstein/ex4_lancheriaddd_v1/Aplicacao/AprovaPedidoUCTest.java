@@ -104,23 +104,23 @@ public class AprovaPedidoUCTest {
         request.setItens(List.of());
 
         Cliente cliente = new Cliente(
-            "12345678900",          // CPF
-            "Fulano da Silva",      // Nome
-            "51999999999",          // Celular
-            "Rua das Flores, 123",  // Endereço
-            "fulano@email.com"      // Email
+            "12345678900",          
+            "Fulano da Silva",      
+            "51999999999",          
+            "Rua das Flores, 123",  
+            "fulano@email.com"      
         );
 
         Pedido pedido = new Pedido(
-            2L,                     // id
-            cliente,                // cliente
-            LocalDateTime.now(),    // dataHoraPagamento
-            List.of(),              // itens
-            Status.CANCELADO,       // status
-            100.0,                  // valor
-            10.0,                   // impostos
-            5.0,                    // desconto
-            105.0                   // valor cobrado
+            2L,                     
+            cliente,                
+            LocalDateTime.now(),    
+            List.of(),             
+            Status.CANCELADO,       
+            100.0,                  
+            10.0,                   
+            5.0,                    
+            105.0                  
         );
 
         ItemPedido itemFaltando = mock(ItemPedido.class);
