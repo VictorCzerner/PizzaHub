@@ -91,11 +91,19 @@ public class PedidoRepositoryJDBC implements PedidoRepository{
 
     @Override
     public int quantidadePedidosUltimos20Dias(String clienteCpf) {
-    String sql = "SELECT COUNT(*) FROM pedidos " +
-                 "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '20' DAY";
-    
-    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, clienteCpf);
-    return count != null ? count : 0;
+        String sql = "SELECT COUNT(*) FROM pedidos " +
+                    "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '20' DAY";
+        
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, clienteCpf);
+        return count != null ? count : 0;
+    }
+    // Retorna o valor gasto nos últimos 30 dias
+    public float valorGastoUltimos30Dias(String clienteCpf){
+        String sql = "SELECT COALESCE(SUM(valorCobrado), 0) FROM pedidos " +
+                     "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '30' DAY";
+
+        Number soma = jdbcTemplate.queryForObject(sql, Number.class, clienteCpf);
+        return soma == null ? 0f : soma.floatValue();
     }
 
     @Override
