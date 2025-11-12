@@ -39,8 +39,7 @@ public class PedidoRepositoryJDBC implements PedidoRepository{
             pedido.getValorCobrado()
         );
 
-        // depois de inserir o pedido, você precisaria buscar o id gerado
-        // aqui, vou supor que você vai buscar pelo último id (pode variar conforme banco)
+        // Verificar problema de valor nulo e concorrencia
         Long pedidoId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM pedidos", Long.class);
         pedido.setId(pedidoId);
 
@@ -88,7 +87,7 @@ public class PedidoRepositoryJDBC implements PedidoRepository{
     @Override
     public int quantidadePedidosUltimos20Dias(String clienteCpf) {
         String sql = "SELECT COUNT(*) FROM pedidos " +
-                    "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '20' DAY";
+                    "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '20 days'";
         
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, clienteCpf);
         return count != null ? count : 0;
@@ -96,7 +95,7 @@ public class PedidoRepositoryJDBC implements PedidoRepository{
     // Retorna o valor gasto nos últimos 30 dias
     public double valorGastoUltimos30Dias(String clienteCpf){
         String sql = "SELECT COALESCE(SUM(valorCobrado), 0) FROM pedidos " +
-                     "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '30' DAY";
+                     "WHERE cliente_cpf = ? AND dataHoraPagamento >= CURRENT_DATE - INTERVAL '30 days'";
 
         Number soma = jdbcTemplate.queryForObject(sql, Number.class, clienteCpf);
         return soma == null ? 0f : soma.doubleValue();

@@ -2,6 +2,10 @@ spring:
   datasource:
     url: jdbc:postgresql://ep-icy-sunset-ac0bhd6h-pooler.sa-east-1.aws.neon.tech/neondb?user=neondb_owner&password=npg_ZsPNI67JuxVd&sslmode=require&channelBinding=require
     driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
 
 
 

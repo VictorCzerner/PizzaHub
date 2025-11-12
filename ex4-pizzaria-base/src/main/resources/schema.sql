@@ -21,15 +21,15 @@ create table if not exists itensEstoque(
 -- Tabela Pedido
 create table if not exists pedidos (
   id bigint primary key,
-  cliente_cpf bigint,
+  cliente_cpf varchar(15),
   dataHoraPagamento timestamp not null,
-  status_pedido VARCHAR(20) NOT NULL -- atualizar depois para um create type
+  status_pedido VARCHAR(20) NOT NULL, -- atualizar depois para um create type
   valor numeric(8,2) not null,
   impostos numeric(8,2) not null,
   descontos numeric(8,2) not null,
   valorCobrado numeric(8,2) not null,
   foreign key (cliente_cpf) references clientes(cpf)
-)
+);
 
 --Tabela ItemPedido
 create table if not exists item_pedido (

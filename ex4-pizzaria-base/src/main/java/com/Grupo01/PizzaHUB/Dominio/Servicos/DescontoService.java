@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.Grupo01.PizzaHUB.Dominio.Dados.DescontosRepository;
 import com.Grupo01.PizzaHUB.Dominio.Entidades.Cliente;
 import com.Grupo01.PizzaHUB.Dominio.Entidades.Desconto;
 import com.Grupo01.PizzaHUB.Dominio.Entidades.Pedido;
+@Service
 public class DescontoService {
     private final DescontosRepository descontosRepository;
     private final Map<String, DescontoConcretoI> descontosAplicaveisPorNome;
@@ -51,7 +53,7 @@ public class DescontoService {
         // Os nomes dos descontos tem que ser os exatamente os mesmos nomes que estão na tabela SQL
         else{
             String nomeDescontoAtivo =  descontoAtivo.getNome();
-            double percentagemDesconto = descontoAtivo.getPer();
+            double percentagemDesconto = descontoAtivo.getDesconto();
             DescontoConcretoI descontoEscolhido =  descontosAplicaveisPorNome.get(nomeDescontoAtivo);
 
             return descontoEscolhido.aplicarDesconto(cliente, pedido, percentagemDesconto);

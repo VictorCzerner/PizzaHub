@@ -38,7 +38,7 @@ public class AprovaPedidoUC {
             Pedido pedido = pedidoService.criaPedido(pedidoRequest);
             List<ItemPedido> itensEmFalta = new ArrayList<>();
 
-            pedido = pedidoService.aprovaPedido(pedido);
+            pedido = pedidoService.aprovaPedido(cliente, pedido);
             if (pedido.getStatus() == Status.CANCELADO) {
                 itensEmFalta = pedidoService.verificaItens(pedido);
             }
