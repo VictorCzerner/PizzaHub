@@ -6,19 +6,28 @@ public class Cliente {
     private String celular;
     private String endereco;
     private String email;
+    private String senha;
+    private Role role;
 
-    public Cliente(String cpf, String nome, String celular, String endereco, String email) {
+    public Cliente(String cpf, String nome, String celular, String endereco, String email, String senha, Role role ) {
         this.cpf = cpf;
         this.nome = nome;
         this.celular = celular;
         this.endereco = endereco;
         this.email = email;
+        this.senha = senha;
+        this.role = role;   
+    }
+
+    public Cliente() {
     }
 
     public Cliente(String cpf) {
         this.cpf = cpf;
     }
 
+    public Role getRole() { return role; }   
+    public String getSenha() { return senha; }
     public String getCpf() { return cpf; }
     public String getNome() { return nome; }
     public String getCelular() { return celular; }
