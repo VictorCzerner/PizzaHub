@@ -10,4 +10,6 @@ public interface CardapioRepository {
     List<CabecalhoCardapio> cardapiosDisponiveis();
     Cardapio recuperaPorId(long id);
     List<Produto> indicacoesDoChef();
+    void atualizarAtivo(long id);
+    Cardapio recuperaAtivo(); 
 }

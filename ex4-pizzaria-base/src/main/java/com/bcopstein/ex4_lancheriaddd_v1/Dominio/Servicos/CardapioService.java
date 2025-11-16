@@ -1,7 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,14 @@ public class CardapioService {
     @Autowired
     public CardapioService(CardapioRepository cardapioRepository){
         this.cardapioRepository = cardapioRepository;
+    }
+
+    public void ativarCardapio(long id) {
+        cardapioRepository.atualizarAtivo(id);
+    }
+
+    public Cardapio recuperaCardapioAtivo() {
+        return cardapioRepository.recuperaAtivo();
     }
 
     public Cardapio recuperaCardapio(long Id){
