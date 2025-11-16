@@ -1,9 +1,11 @@
-create table if not exists clientes(
-  cpf varchar(15) not null primary key,
-  nome varchar(100) not null,
-  celular varchar(20) not null,
-  endereco varchar(255) not null,
-  email varchar(255) not null
+CREATE TABLE IF NOT EXISTS clientes (
+    cpf VARCHAR(15) NOT NULL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    celular VARCHAR(20) NOT NULL,
+    endereco VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    senha VARCHAR(200) NOT NULL,      
+    role VARCHAR(20) NOT NULL         
 );
 
 create table if not exists ingredientes (
@@ -76,7 +78,8 @@ create table if not exists produto_receita (
 -- Tabela de Cardapios
 create table if not exists cardapios (
   id bigint primary key,
-  titulo varchar(255) not null
+  titulo varchar(255) not null,
+  ativo BOOLEAN not null
 );
 
 -- Tabela de relacionamento entre Cardapio e Produto

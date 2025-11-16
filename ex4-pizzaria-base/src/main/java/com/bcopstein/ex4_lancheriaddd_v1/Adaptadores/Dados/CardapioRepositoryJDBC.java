@@ -1,7 +1,6 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Adaptadores.Dados;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,18 +23,52 @@ public class CardapioRepositoryJDBC implements CardapioRepository{
         this.produtosRepository = produtosRepository;
     }
 
+
+
+    @Override
+    public void atualizarAtivo(long id) {
+        String sqlInativaTodos = "UPDATE cardapios SET ativo = false";
+        jdbcTemplate.update(sqlInativaTodos);
+
+        String sqlAtiva = "UPDATE cardapios SET ativo = true WHERE id = ?";
+        jdbcTemplate.update(sqlAtiva, id);
+    }
+
+    @Override
+    public Cardapio recuperaAtivo() {
+        String sql = "SELECT id, titulo, ativo FROM cardapios WHERE ativo = true";
+        List<Cardapio> cardapios = jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> new Cardapio(
+                rs.getLong("id"),
+                rs.getString("titulo"),
+                null,               
+                rs.getBoolean("ativo")
+            )
+        );
+
+        if (cardapios.isEmpty()) {
+            return null; // nenhum cardápio ativo
+        }
+
+        Cardapio cardapio = cardapios.get(0);
+        List<Produto> produtos = produtosRepository.recuperaProdutosCardapio(cardapio.getId());
+        cardapio.setProdutos(produtos);
+        return cardapio;
+    }
+
     @Override
     public Cardapio recuperaPorId(long id) {
-        String sql = "SELECT id, titulo FROM cardapios WHERE id = ?";
+        String sql = "SELECT id, titulo, ativo FROM cardapios WHERE id = ?";
         List<Cardapio> cardapios = this.jdbcTemplate.query(
             sql,
             ps -> ps.setLong(1, id),
-            (rs, rowNum) -> new Cardapio(rs.getLong("id"), rs.getString("titulo"), null)
+            (rs, rowNum) -> new Cardapio(rs.getLong("id"), rs.getString("titulo"), null, rs.getBoolean("ativo"))
         );
         if (cardapios.isEmpty()) {
             return null;
         }
-        Cardapio cardapio = cardapios.getFirst();
+        Cardapio cardapio = cardapios.get(0);
         List<Produto> produtos = produtosRepository.recuperaProdutosCardapio(id);
         cardapio.setProdutos(produtos);
         return cardapio;
