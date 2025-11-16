@@ -1,9 +1,7 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Request.PedidoRequest;
-import com.bcopstein.ex4_lancheriaddd_v1.Aplicacao.Request.ItemPedidoRequest;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.*;
-import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido.Status;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class PedidoService {
     private final PedidoRepository pedidoRepository;
-    private final ItensEstoqueRepository itensEstoqueRepository;
+    private final ItensEstoqueService itensEstoqueService;
     private final ProdutosRepository produtoRepository;
     private final ImpostoService impostoService;
     private final DescontoService descontoService;
@@ -24,13 +22,13 @@ public class PedidoService {
     @Autowired
     public PedidoService(
             PedidoRepository pedidoRepository,
-            ItensEstoqueRepository itensEstoqueRepository,
+            ItensEstoqueService itensEstoqueService,
             ProdutosRepository produtoRepository,
             ImpostoService impostoService,
             DescontoService descontoService) {
 
         this.pedidoRepository = pedidoRepository;
-        this.itensEstoqueRepository = itensEstoqueRepository;
+        this.itensEstoqueService = itensEstoqueService;
         this.produtoRepository = produtoRepository;
         this.impostoService = impostoService;
         this.descontoService = descontoService;
@@ -80,6 +78,7 @@ public class PedidoService {
 
     public Pedido aprovaPedido(Pedido pedido) {
         if (verificaItens(pedido).isEmpty()) {
+            reduzEstoque(pedido);
             double custoFinal = calculaCusto(pedido);
             pedido.setStatus(Pedido.Status.APROVADO);
             pedido.setValorCobrado(custoFinal);
@@ -106,7 +105,7 @@ public class PedidoService {
 
             for (Ingrediente ingrediente : receita.getIngredientes()) {
                 int quantidadeNecessaria = itemPedido.getQuantidade();
-                int quantidadeEstoque = itensEstoqueRepository.getQuantidade(ingrediente.getId());
+                int quantidadeEstoque = itensEstoqueService.consultarQuantidade(ingrediente.getId());
 
                 if (quantidadeEstoque < quantidadeNecessaria) {
                     itensEmFalta.add(itemPedido);
@@ -116,6 +115,23 @@ public class PedidoService {
 
         return itensEmFalta;
     }
+
+    /**
+     * Reduz o estoque dos ingredientes do pedido.
+     */
+    public void reduzEstoque(Pedido pedido) {
+
+        for (ItemPedido itemPedido : pedido.getItens()) {
+            Produto produto = itemPedido.getItem();
+            Receita receita = produto.getReceita();
+
+            for (Ingrediente ingrediente : receita.getIngredientes()) {
+                int quantidadeNecessaria = itemPedido.getQuantidade();
+                itensEstoqueService.reduzirEstoque(ingrediente, quantidadeNecessaria);
+            }
+        }
+    }
+
 
 
     public double calculaCusto(Pedido pedido) {

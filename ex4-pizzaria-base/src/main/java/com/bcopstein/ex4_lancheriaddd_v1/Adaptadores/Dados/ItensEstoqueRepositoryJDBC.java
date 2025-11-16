@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.ItensEstoqueRepository;
 
-@Component
+
 public class ItensEstoqueRepositoryJDBC implements ItensEstoqueRepository{
     private JdbcTemplate jdbcTemplate;
 
