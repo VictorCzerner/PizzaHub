@@ -23,7 +23,7 @@ public class SecurityConfig{
                 // ROTAS PÚBLICAS
                 .requestMatchers("/clientes/**").permitAll()
                 .requestMatchers("/cardapio/recuperaAtivo").permitAll()
-                .requestMatchers("").permitAll()
+
 
                 // ROTAS PROTEGIDAS
                 .requestMatchers("/pedidos/**").hasAnyRole("CLIENTE", "MASTER")

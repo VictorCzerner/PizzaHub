@@ -53,7 +53,7 @@ public class PedidoServiceTest {
     @Test
     public void deveCalcularCustoCorretamenteSemDesconto() {
         Cliente cliente = new Cliente(
-            "12345678900", "Fulano", "51999999999", "Rua das Flores, 123", "fulano@email.com"
+            "12345678900", "Fulano", "51999999999", "Rua das Flores, 123", "fulano@email.com", "senha", Role.CLIENTE
         );
 
         Produto produto = mock(Produto.class);
@@ -87,7 +87,7 @@ public class PedidoServiceTest {
 
     @Test
     public void deveRetornarZeroQuandoNaoHaItens() {
-        Cliente cliente = new Cliente("12345678900", "Fulano", "51999999999", "Rua X", "email@email.com");
+        Cliente cliente = new Cliente("12345678900", "Fulano", "51999999999", "Rua X", "email@email.com", "senha", Role.CLIENTE);
         Pedido pedido = new Pedido(
             2L, cliente, LocalDateTime.now(),
             List.of(), Pedido.Status.NOVO,
@@ -109,7 +109,7 @@ public class PedidoServiceTest {
 
     @Test
     public void deveCalcularCustoComDesconto() {
-        Cliente cliente = new Cliente("98765432100", "Maria", "51988888888", "Rua Azul, 99", "maria@email.com");
+        Cliente cliente = new Cliente("98765432100", "Maria", "51988888888", "Rua Azul, 99", "maria@email.com", "senha", Role.CLIENTE);
 
         Produto produto = mock(Produto.class);
         when(produto.getPreco()).thenReturn(10000); // 100 reais

@@ -17,6 +17,7 @@ import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.ItemPedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Pedido.Status;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Produto;
+import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.Role;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.ClienteService;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos.PedidoService;
 
@@ -54,7 +55,9 @@ public class AprovaPedidoUCTest {
             "Fulano da Silva",
             "51999999999",
             "Rua das Flores, 123",
-            "fulano@email.com"
+            "fulano@email.com",
+            "senha",
+            Role.CLIENTE
         );
 
         Pedido pedido = new Pedido(
@@ -108,7 +111,9 @@ public class AprovaPedidoUCTest {
             "Fulano da Silva",      
             "51999999999",          
             "Rua das Flores, 123",  
-            "fulano@email.com"      
+            "fulano@email.com",
+            "senha",
+            Role.CLIENTE      
         );
 
         Pedido pedido = new Pedido(
