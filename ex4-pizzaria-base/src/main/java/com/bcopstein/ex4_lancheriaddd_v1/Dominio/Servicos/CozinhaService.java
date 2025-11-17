@@ -34,7 +34,7 @@ public class CozinhaService {
         emPreparacao = pedido;
         System.out.println("Pedido em preparacao: "+pedido);
         // Agenda pedidoPronto para ser chamado em 2 segundos
-        scheduler.schedule(() -> pedidoPronto(), 50, TimeUnit.SECONDS);
+        scheduler.schedule(() -> pedidoPronto(), 5, TimeUnit.SECONDS);
     }
 
     public synchronized void chegadaDePedido(Pedido p) {
@@ -52,7 +52,7 @@ public class CozinhaService {
         System.out.println("Pedido na fila de saída: " + emPreparacao);
 
         // Quando o pedido estiver pronto, agenda a entrega
-        scheduler.schedule(() -> iniciarEntrega(emPreparacao), 10, TimeUnit.SECONDS);
+        scheduler.schedule(() -> iniciarEntrega(emPreparacao), 5, TimeUnit.SECONDS);
 
         emPreparacao = null;
         if (!filaEntrada.isEmpty()) {

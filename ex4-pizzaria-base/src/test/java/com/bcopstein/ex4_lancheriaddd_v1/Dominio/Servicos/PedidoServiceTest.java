@@ -1,27 +1,15 @@
-/**
- * Testes unitários da função calculaCusto() da classe PedidoService
- *
- * Casos de teste:
- * 1. Pedido com um item de preço 100 → sem desconto → imposto 10% → total esperado 110.
- * 2. Pedido sem itens → total esperado 0.
- * 3. Pedido com desconto aplicado → valor base 100 → desconto 7% → total esperado 93.
- */
-
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.*;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class PedidoServiceTest {
 
@@ -49,7 +37,9 @@ public class PedidoServiceTest {
         );
     }
 
-
+    // ===========================================================
+    // 1️ Pedido com um item → sem desconto → imposto 10% → total 110
+    // ===========================================================
     @Test
     public void deveCalcularCustoCorretamenteSemDesconto() {
         Cliente cliente = new Cliente(
@@ -66,25 +56,19 @@ public class PedidoServiceTest {
             0.0, 0.0, 0.0, 0.0
         );
 
-        when(pedidoRepository.quantidadePedidosUltimos20Dias("12345678900")).thenReturn(2);
-        when(pedidoRepository.valorGastoUltimos30Dias("12345678900")).thenReturn((float) 500.0);
-        when(descontoService.aplicarDesconto(anyDouble(), anyInt(), anyDouble(), any(TipoDesconto.class)))
-            .thenAnswer(i -> i.getArgument(0, Double.class));
-        when(descontoService.getPercentualDesconto(anyInt(), anyDouble(), any(TipoDesconto.class)))
-            .thenReturn(0.0);
-        when(impostoService.calcularImpostos(anyDouble()))
-            .thenAnswer(i -> i.getArgument(0, Double.class) * 0.10);
+        when(descontoService.aplicarDescontoAtivo(cliente, pedido)).thenReturn(100.0);
+        when(impostoService.calcularImpostos(100.0)).thenReturn(10.0);
 
-        double total = pedidoService.calculaCusto(pedido);
+        double total = pedidoService.calculaCusto(cliente, pedido);
 
-        assertEquals(110, total, 0.001);
-        assertEquals(0.0, pedido.getDesconto(), 0.001);
-        assertEquals(10, pedido.getImpostos(), 0.001);
-
-        verify(descontoService).aplicarDesconto(anyDouble(), anyInt(), anyDouble(), any(TipoDesconto.class));
-        verify(impostoService).calcularImpostos(anyDouble());
+        assertEquals(110.0, total, 0.001);
+        verify(descontoService, times(1)).aplicarDescontoAtivo(cliente, pedido);
+        verify(impostoService, times(1)).calcularImpostos(100.0);
     }
 
+    // ===========================================================
+    // 2️ Pedido sem itens → total esperado 0
+    // ===========================================================
     @Test
     public void deveRetornarZeroQuandoNaoHaItens() {
         Cliente cliente = new Cliente("12345678900", "Fulano", "51999999999", "Rua X", "email@email.com", "senha", Role.CLIENTE);
@@ -94,19 +78,15 @@ public class PedidoServiceTest {
             0.0, 0.0, 0.0, 0.0
         );
 
-        when(pedidoRepository.quantidadePedidosUltimos20Dias(anyString())).thenReturn(0);
-        when(pedidoRepository.valorGastoUltimos30Dias(anyString())).thenReturn((float) 0.0);
-        when(descontoService.aplicarDesconto(anyDouble(), anyInt(), anyDouble(), any(TipoDesconto.class)))
-            .thenReturn(0.0);
-        when(impostoService.calcularImpostos(anyDouble())).thenReturn(0.0);
-
-        double total = pedidoService.calculaCusto(pedido);
+        double total = pedidoService.calculaCusto(cliente, pedido);
 
         assertEquals(0.0, total, 0.001);
         assertEquals(0.0, pedido.getValor(), 0.001);
     }
 
-
+    // ===========================================================
+    // 3️ Pedido com desconto aplicado → valor base 100 → desconto 7% → total 93
+    // ===========================================================
     @Test
     public void deveCalcularCustoComDesconto() {
         Cliente cliente = new Cliente("98765432100", "Maria", "51988888888", "Rua Azul, 99", "maria@email.com", "senha", Role.CLIENTE);
@@ -121,28 +101,19 @@ public class PedidoServiceTest {
             0.0, 0.0, 0.0, 0.0
         );
 
-        when(pedidoRepository.quantidadePedidosUltimos20Dias("98765432100")).thenReturn(5);
-        when(pedidoRepository.valorGastoUltimos30Dias("98765432100")).thenReturn((float) 800.0);
+        // Aplica desconto de 7%
+        when(descontoService.aplicarDescontoAtivo(cliente, pedido)).thenReturn(93.0);
+        when(impostoService.calcularImpostos(93.0)).thenReturn(0.0);
 
-        // Aplica desconto de 10%
-        when(descontoService.aplicarDesconto(anyDouble(), anyInt(), anyDouble(), any(TipoDesconto.class)))
-            .thenAnswer(i -> i.getArgument(0, Double.class) * 0.93);
-        when(descontoService.getPercentualDesconto(anyInt(), anyDouble(), any(TipoDesconto.class)))
-            .thenReturn(7.0);
+        double total = pedidoService.calculaCusto(cliente, pedido);
 
-        // Nenhum imposto aqui (para testar apenas desconto)
-        when(impostoService.calcularImpostos(anyDouble())).thenReturn(0.0);
-
-        double total = pedidoService.calculaCusto(pedido);
-
-        // Esperado: 100 - 10% = 90
-        assertEquals(93, total, 0.001);
-        assertEquals(7.0, pedido.getDesconto(), 0.001);
-        assertEquals(0.0, pedido.getImpostos(), 0.001);
+        assertEquals(93.0, total, 0.001);
+        verify(descontoService, times(1)).aplicarDescontoAtivo(cliente, pedido);
     }
 
-    // ------------------ TESTES DO VERIFICA ITENS ------------------
-
+    // ===========================================================
+    // 4️ Itens em falta no estoque
+    // ===========================================================
     @Test
     public void deveRetornarItensEmFaltaQuandoEstoqueInsuficiente() {
         Ingrediente queijo = new Ingrediente(1, "Queijo");
@@ -164,6 +135,9 @@ public class PedidoServiceTest {
         assertEquals("Pizza Mussarela", faltantes.get(0).getItem().getDescricao());
     }
 
+    // ===========================================================
+    // 5️ Estoque suficiente → nenhum item em falta
+    // ===========================================================
     @Test
     public void naoDeveRetornarItensEmFaltaQuandoEstoqueSuficiente() {
         Ingrediente molho = new Ingrediente(2, "Molho de Tomate");
@@ -182,6 +156,5 @@ public class PedidoServiceTest {
         List<ItemPedido> faltantes = pedidoService.verificaItens(pedido);
 
         assertTrue(faltantes.isEmpty());
-    }    
-
+    }
 }

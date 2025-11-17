@@ -29,6 +29,7 @@ public class SecurityConfig{
                 .requestMatchers("/pedidos/**").hasAnyRole("CLIENTE", "MASTER")
                 .requestMatchers("/cardapio/lista", "/cardapio/buscaPorId/**").hasRole("CLIENTE")
                 .requestMatchers("/cardapio/**").hasRole("MASTER")
+                .requestMatchers("/desconto/DecideDesconto").hasRole("MASTER")
 
                 .anyRequest().authenticated()
             )

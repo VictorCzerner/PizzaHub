@@ -79,7 +79,7 @@ public class PedidoService {
     public Pedido aprovaPedido(Pedido pedido) {
         if (verificaItens(pedido).isEmpty()) {
             reduzEstoque(pedido);
-            double custoFinal = calculaCusto(pedido);
+            double custoFinal = calculaCusto(pedido.getCliente(), pedido);
             pedido.setStatus(Pedido.Status.APROVADO);
             pedido.setValorCobrado(custoFinal);
             pedidoRepository.criaPedido(pedido);
@@ -134,7 +134,7 @@ public class PedidoService {
 
 
 
-    public double calculaCusto(Pedido pedido) {
+    public double calculaCusto(Cliente cliente, Pedido pedido) {
         double valor = pedido.getItens().stream()
                 .mapToDouble(item -> (item.getItem().getPreco() * item.getQuantidade()) / 100)
                 .sum();
@@ -142,16 +142,12 @@ public class PedidoService {
         pedido.setValor(valor);
         double valorCobrado = valor;
 
-        int pedidosRecentes = pedidoRepository.quantidadePedidosUltimos20Dias(pedido.getCliente().getCpf());
-        double valorGastoUltimos30dias =  pedidoRepository.valorGastoUltimos30Dias(pedido.getCliente().getCpf());
-        // Esse valor tem que poder ser mudado pelo USUÀRIO MASTER
-        TipoDesconto tipoDesconto = TipoDesconto.CLIENTE_FREQUENTE;
-
         // aplica desconto via serviço
-        double valorComDesconto = descontoService.aplicarDesconto(valorCobrado, pedidosRecentes, valorGastoUltimos30dias, tipoDesconto);
-        double percentualDesconto = descontoService.getPercentualDesconto(pedidosRecentes, valorGastoUltimos30dias, tipoDesconto);
+        double valorComDesconto = descontoService.aplicarDescontoAtivo(cliente, pedido);
+        double percentualDesconto = descontoService.percentagemDesconto();
         pedido.setDesconto(percentualDesconto);
         
+
         double impostos = impostoService.calcularImpostos(valorComDesconto);
         pedido.setImpostos(impostos);
 
@@ -160,6 +156,7 @@ public class PedidoService {
 
         return valorCobrado;
     }
+
 
     public Pedido buscaPorId(long id) {
         return pedidoRepository.buscaPorId(id);
