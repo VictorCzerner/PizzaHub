@@ -1,5 +1,15 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
+// ===========================================================
+// 1️ Cliente FREQUENTE (>=3 pedidos) → desconto 7%
+// 2️ Cliente GASTADOR (>=500 gasto) → desconto 15%
+// 3️ Nenhum desconto ativo → retorna valor cheio do pedido
+// 4️ Verifica se lista de descontos está sendo carregada
+// 5️ Percentual de desconto ativo
+// 6️ Verifica se método decideDescontoAtivo() delega ao repositório
+// ===========================================================
+
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -47,9 +57,7 @@ public class DescontoServiceTest {
         pedido = mock(Pedido.class);
     }
 
-    // ===========================================================
-    // 1️ Cliente FREQUENTE (>=3 pedidos) → desconto 7%
-    // ===========================================================
+    
     @Test
     void deveAplicarDescontoClienteFrequente() {
         Desconto descontoAtivo = new Desconto(1, "ClienteFrequente", 0.07, true);
@@ -62,9 +70,7 @@ public class DescontoServiceTest {
         verify(descontoClienteFrequente, times(1)).aplicarDesconto(cliente, pedido, 0.07);
     }
 
-    // ===========================================================
-    // 2️ Cliente GASTADOR (>=500 gasto) → desconto 15%
-    // ===========================================================
+
     @Test
     void deveAplicarDescontoClienteGastador() {
         Desconto descontoAtivo = new Desconto(2, "ClienteGastador", 0.15, true);
@@ -77,9 +83,7 @@ public class DescontoServiceTest {
         verify(descontoClienteGastador, times(1)).aplicarDesconto(cliente, pedido, 0.15);
     }
 
-    // ===========================================================
-    // 3️ Nenhum desconto ativo → retorna valor cheio do pedido
-    // ===========================================================
+
     @Test
     void deveRetornarValorOriginalQuandoNaoHaDescontoAtivo() {
         Desconto descontoPadrao = new Desconto(-1, "Nenhum", 0.0, false);
@@ -93,9 +97,7 @@ public class DescontoServiceTest {
     }
 
 
-    // ===========================================================
-    // 4️ Verifica se lista de descontos está sendo carregada
-    // ===========================================================
+
     @Test
     void deveRecuperarTodosOsDescontos() {
         List<Desconto> listaFake = List.of(
@@ -112,9 +114,7 @@ public class DescontoServiceTest {
         verify(descontosRepository, times(1)).listaTodos();
     }
 
-    // ===========================================================
-    // 5️ Percentual de desconto ativo
-    // ===========================================================
+
     @Test
     void deveRetornarPercentualDescontoAtivo() {
         Desconto descontoAtivo = new Desconto(3, "ClienteGastador", 0.15, true);
@@ -125,9 +125,7 @@ public class DescontoServiceTest {
         assertEquals(0.15, percentual, 0.001);
     }
 
-    // ===========================================================
-    // 6️ Verifica se método decideDescontoAtivo() delega ao repositório
-    // ===========================================================
+
     @Test
     void deveDecidirDescontoAtivoComBaseNoRepositorio() {
         when(descontosRepository.decideDescontoAtivo(1L)).thenReturn(true);

@@ -1,5 +1,13 @@
 package com.bcopstein.ex4_lancheriaddd_v1.Dominio.Servicos;
 
+// ===========================================================
+// 1️ Pedido com um item → sem desconto → imposto 10% → total 110
+// 2️ Pedido sem itens → total esperado 0
+// 3️ Pedido com desconto aplicado → valor base 100 → desconto 7% → total 93
+// 4️ Itens em falta no estoque
+// 5️ Estoque suficiente → nenhum item em falta
+// ===========================================================
+
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Entidades.*;
 import com.bcopstein.ex4_lancheriaddd_v1.Dominio.Dados.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +45,7 @@ public class PedidoServiceTest {
         );
     }
 
-    // ===========================================================
-    // 1️ Pedido com um item → sem desconto → imposto 10% → total 110
-    // ===========================================================
+
     @Test
     public void deveCalcularCustoCorretamenteSemDesconto() {
         Cliente cliente = new Cliente(
@@ -66,9 +72,7 @@ public class PedidoServiceTest {
         verify(impostoService, times(1)).calcularImpostos(100.0);
     }
 
-    // ===========================================================
-    // 2️ Pedido sem itens → total esperado 0
-    // ===========================================================
+    
     @Test
     public void deveRetornarZeroQuandoNaoHaItens() {
         Cliente cliente = new Cliente("12345678900", "Fulano", "51999999999", "Rua X", "email@email.com", "senha", Role.CLIENTE);
@@ -84,9 +88,7 @@ public class PedidoServiceTest {
         assertEquals(0.0, pedido.getValor(), 0.001);
     }
 
-    // ===========================================================
-    // 3️ Pedido com desconto aplicado → valor base 100 → desconto 7% → total 93
-    // ===========================================================
+
     @Test
     public void deveCalcularCustoComDesconto() {
         Cliente cliente = new Cliente("98765432100", "Maria", "51988888888", "Rua Azul, 99", "maria@email.com", "senha", Role.CLIENTE);
@@ -111,9 +113,7 @@ public class PedidoServiceTest {
         verify(descontoService, times(1)).aplicarDescontoAtivo(cliente, pedido);
     }
 
-    // ===========================================================
-    // 4️ Itens em falta no estoque
-    // ===========================================================
+
     @Test
     public void deveRetornarItensEmFaltaQuandoEstoqueInsuficiente() {
         Ingrediente queijo = new Ingrediente(1, "Queijo");
@@ -135,9 +135,7 @@ public class PedidoServiceTest {
         assertEquals("Pizza Mussarela", faltantes.get(0).getItem().getDescricao());
     }
 
-    // ===========================================================
-    // 5️ Estoque suficiente → nenhum item em falta
-    // ===========================================================
+
     @Test
     public void naoDeveRetornarItensEmFaltaQuandoEstoqueSuficiente() {
         Ingrediente molho = new Ingrediente(2, "Molho de Tomate");
