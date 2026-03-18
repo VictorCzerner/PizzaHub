@@ -39,21 +39,38 @@ Tecnologias UtilizadasO projeto utiliza as tecnologias mais modernas do ecossist
 lista completa dos endpoints da aplicação, organizada por controlador:
 
 CardapioController
+
 GET /cardapio/recuperaAtivo
+
 PUT /cardapio/atualizaAtivo/{id}
+
 GET /cardapio/buscaPorId/{id}
+
 GET /cardapio/lista
+
 ClienteController
+
 POST /clientes/cadastrar
+
 GET /clientes/buscaPorCpf/{cpf}
+
 DescontosController
+
 GET /descontos/descontosDisponiveis
+
 GET /descontos/DecideDesconto/{id}
+
 PedidoController
+
 POST /pedidos/submetePedido
+
 GET /pedidos/status/{id}
+
 GET /pedidos/cancelaPedido/{id}
+
 GET /pedidos/pedidosEntreguesEntre/{dataInicio}/{dataFinal}
+
 GET /pedidos/pagarPedido/{id}
+
 
 
