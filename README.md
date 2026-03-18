@@ -16,7 +16,7 @@ Tecnologias UtilizadasO projeto utiliza as tecnologias mais modernas do ecossist
   
   Mockito & JUnit: Para garantir a qualidade do código através de testes automatizados.
 
-🛠️ Arquitetura e PadrõesDiferente de projetos simples, o PizzaHub foca em boas práticas de engenharia:
+ Arquitetura e PadrõesDiferente de projetos simples, o PizzaHub foca em boas práticas de engenharia:
 
   DDD (Domain Driven Design): Organização do código baseada no domínio do negócio.
   
@@ -35,3 +35,25 @@ Tecnologias UtilizadasO projeto utiliza as tecnologias mais modernas do ecossist
    Persistência de dados em banco relacional.
    
    Camada de segurança para proteção de endpoints.
+
+lista completa dos endpoints da aplicação, organizada por controlador:
+
+CardapioController
+GET /cardapio/recuperaAtivo
+PUT /cardapio/atualizaAtivo/{id}
+GET /cardapio/buscaPorId/{id}
+GET /cardapio/lista
+ClienteController
+POST /clientes/cadastrar
+GET /clientes/buscaPorCpf/{cpf}
+DescontosController
+GET /descontos/descontosDisponiveis
+GET /descontos/DecideDesconto/{id}
+PedidoController
+POST /pedidos/submetePedido
+GET /pedidos/status/{id}
+GET /pedidos/cancelaPedido/{id}
+GET /pedidos/pedidosEntreguesEntre/{dataInicio}/{dataFinal}
+GET /pedidos/pagarPedido/{id}
+
+
